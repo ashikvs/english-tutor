@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { BookOpen, BookOpenText, Check, ChevronRight, CircleHelp, Flame, House, PenLine, RotateCcw, Sparkles, Trophy } from 'lucide-react';
 import { curriculum } from '../data/curriculum';
 import { lessons } from '../data/lessons';
-import { readCompletedDays, saveCompletedDays } from '../storage/progress';
+import { getCurrentStreak, readProgress, recordLessonCompletion, saveProgress } from '../storage/progress';
 import styles from './App.module.css';
 
 type Destination = 'Home' | 'Learn' | 'Practice' | 'Write' | 'Progress';
@@ -17,19 +17,20 @@ const destinations: { name: Destination; icon: typeof House }[] = [
 function App() {
   const [screen, setScreen] = useState<Screen>('Home');
   const [selectedDay, setSelectedDay] = useState(1);
-  const [completedDays, setCompletedDays] = useState<number[]>(readCompletedDays);
+  const [progress, setProgress] = useState(readProgress);
   const openLesson = (day = 1) => { setSelectedDay(day); setScreen('Lesson'); };
   const completeLesson = (day: number) => {
-    if (completedDays.includes(day)) return;
-    const updated = [...completedDays, day].sort((first, second) => first - second);
-    saveCompletedDays(updated);
-    setCompletedDays(updated);
+    const updated = recordLessonCompletion(progress, day);
+    saveProgress(updated);
+    setProgress(updated);
   };
   const navTo = (name: Destination) => setScreen(name);
   const active = screen === 'Lesson' ? 'Learn' : screen;
+  const completedDays = progress.completedDays;
   const availableDays = curriculum.filter((day) => day.available);
   const nextDay = availableDays.find((day) => !completedDays.includes(day.day)) ?? availableDays[0];
   const totalXp = completedDays.length * 20;
+  const streak = getCurrentStreak(progress.learningDates);
 
   return <div className={styles.appShell}>
     <aside className={styles.sidebar} aria-label="Main navigation">
@@ -45,8 +46,8 @@ function App() {
       <div className={styles.profile}><div className={styles.avatar}>A</div><div><strong>Amrtha</strong><span>English learner</span></div></div>
     </aside>
     <main className={styles.main}>
-      <header className={styles.topbar}><span className={styles.mobileBrand}><BookOpenText size={20} /> English with Amrtha</span><div className={styles.topbarRight}><span className={styles.streak}><Flame size={17} /> 0 day streak</span><span className={styles.xp}><Sparkles size={16} /> {totalXp} XP</span></div></header>
-      {screen === 'Home' && <Dashboard nextDay={nextDay} completedCount={completedDays.length} totalXp={totalXp} onContinue={openLesson} onLearn={() => navTo('Learn')} />}
+      <header className={styles.topbar}><span className={styles.mobileBrand}><BookOpenText size={20} /> English with Amrtha</span><div className={styles.topbarRight}><span className={styles.streak}><Flame size={17} /> {streak} day streak</span><span className={styles.xp}><Sparkles size={16} /> {totalXp} XP</span></div></header>
+      {screen === 'Home' && <Dashboard nextDay={nextDay} completedCount={completedDays.length} totalXp={totalXp} streak={streak} onContinue={openLesson} onLearn={() => navTo('Learn')} />}
       {screen === 'Learn' && <Curriculum completedDays={completedDays} onOpenLesson={openLesson} />}
       {screen === 'Lesson' && <Lesson key={selectedDay} day={selectedDay} onComplete={completeLesson} onBack={() => navTo('Learn')} />}
       {screen !== 'Home' && screen !== 'Learn' && screen !== 'Lesson' && <ComingSoon destination={screen} />}
@@ -56,11 +57,11 @@ function App() {
   </div>;
 }
 
-function Dashboard({ nextDay, completedCount, totalXp, onContinue, onLearn }: { nextDay: (typeof curriculum)[number]; completedCount: number; totalXp: number; onContinue: (day: number) => void; onLearn: () => void }) {
+function Dashboard({ nextDay, completedCount, totalXp, streak, onContinue, onLearn }: { nextDay: (typeof curriculum)[number]; completedCount: number; totalXp: number; streak: number; onContinue: (day: number) => void; onLearn: () => void }) {
   return <div className={styles.content}>
     <div className={styles.greeting}><div><p className={styles.eyebrow}>YOUR WORKPLACE ENGLISH JOURNEY</p><h1>Welcome, Amrtha <span aria-hidden="true">🌼</span></h1><p className={styles.subheading}>Build confidence describing your work in English.</p></div><div className={styles.greetingArt} aria-hidden="true"><span>✦</span><BookOpenText size={48} /></div></div>
     <section className={styles.heroCard}><div className={styles.heroCopy}><span className={styles.dayPill}><Sparkles size={14} /> YOUR NEXT STEP · DAY {nextDay.day}</span><h2>{completedCount === 0 ? <>Every great sentence<br />starts somewhere.</> : <>Keep building<br />your confidence.</>}</h2><p>{nextDay.title}: {nextDay.topic}.</p><button className={styles.primaryButton} onClick={() => onContinue(nextDay.day)}>{completedCount === 20 ? 'Review lessons' : `Continue Day ${nextDay.day}`} <ChevronRight size={18} /></button></div><div className={styles.heroIllustration} aria-hidden="true"><span>☀</span><BookOpenText size={62} /><i>✦</i></div></section>
-    <div className={styles.statsGrid}><StatCard icon={<Flame size={20} />} label="Daily streak" value="0 days" caption="Daily streak tracking coming later" tone="peach" /><StatCard icon={<Sparkles size={19} />} label="Total XP" value={`${totalXp} XP`} caption="20 XP for each completed lesson" tone="lavender" /><StatCard icon={<BookOpen size={20} />} label="Lessons complete" value={`${completedCount} of 20`} caption="Your progress is saved on this device" tone="mint" /></div>
+    <div className={styles.statsGrid}><StatCard icon={<Flame size={20} />} label="Daily streak" value={`${streak} ${streak === 1 ? 'day' : 'days'}`} caption={streak > 0 ? 'Consecutive days with a completed lesson' : 'Complete a lesson to start your streak'} tone="peach" /><StatCard icon={<Sparkles size={19} />} label="Total XP" value={`${totalXp} XP`} caption="20 XP for each completed lesson" tone="lavender" /><StatCard icon={<BookOpen size={20} />} label="Lessons complete" value={`${completedCount} of 20`} caption="Your progress is saved on this device" tone="mint" /></div>
     <section className={styles.todaySection}><div className={styles.sectionHeader}><div><p className={styles.eyebrow}>YOUR LEARNING PATH</p><h2>Today's little plan</h2></div><button className={styles.textButton} onClick={onLearn}>View all days <ChevronRight size={16} /></button></div><button className={styles.planRow} onClick={() => onContinue(nextDay.day)}><span className={styles.planNumber}>{String(nextDay.day).padStart(2, '0')}</span><span className={styles.planCopy}><strong>{nextDay.title}</strong><small>{nextDay.topic}</small></span><span className={styles.planTime}>5 min</span><ChevronRight size={18} /></button></section>
   </div>;
 }
