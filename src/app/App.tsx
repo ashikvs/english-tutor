@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { BookOpen, BookOpenText, Check, ChevronRight, CircleHelp, Flame, House, PenLine, RotateCcw, Sparkles, Trophy } from 'lucide-react';
 import { curriculum } from '../data/curriculum';
 import { lessons } from '../data/lessons';
+import { shuffleWordIndexes } from '../engine/wordOrder';
 import { getCurrentStreak, readProgress, recordLessonCompletion, saveProgress } from '../storage/progress';
 import styles from './App.module.css';
 
@@ -96,6 +97,9 @@ function Lesson({ day, onComplete, onBack }: { day: number; onComplete: (day: nu
 
   if (!lesson) return <div className={styles.content}><h1>Lesson not available</h1><button className={styles.backButton} onClick={onBack}>Back to learning path</button></div>;
   const exercise = lesson.exercises[exerciseIndex];
+  const wordOrderIndexes = exercise.kind === 'word-order'
+    ? shuffleWordIndexes(exercise.words.length, day * 31 + exerciseIndex * 17, exercise.answer)
+    : [];
 
   const checkPractice = () => {
     let correct = false;
@@ -138,7 +142,7 @@ function Lesson({ day, onComplete, onBack }: { day: number; onComplete: (day: nu
     {phase === 'practice' && <section className={styles.exerciseCard}>
       <div className={styles.exerciseHeader}><span className={styles.exerciseIcon}><Sparkles size={19} /></span><div><p className={styles.eyebrow}>PRACTICE {exerciseIndex + 1} OF {lesson.exercises.length}</p><h2>{exercise.kind === 'word-order' ? 'Build a sentence' : 'Choose the best answer'}</h2></div></div>
       <p className={styles.exercisePrompt}>{exercise.prompt}</p>
-      {exercise.kind === 'word-order' ? <><div className={styles.answerArea} aria-live="polite">{selectedWords.length === 0 ? <span className={styles.answerHint}>Your sentence will appear here…</span> : selectedWords.map((index, position) => <span className={styles.answerWord} key={position}>{exercise.words[index]}</span>)}</div><div className={styles.wordBank} aria-label="Available words">{exercise.words.map((word, index) => <button key={index} className={styles.wordButton} disabled={selectedWords.includes(index) || practiceFeedback === 'correct'} onClick={() => { setSelectedWords((current) => [...current, index]); setPracticeFeedback(null); }}>{word}</button>)}</div></>
+      {exercise.kind === 'word-order' ? <><div className={styles.answerArea} aria-live="polite">{selectedWords.length === 0 ? <span className={styles.answerHint}>Your sentence will appear here…</span> : selectedWords.map((index, position) => <span className={styles.answerWord} key={position}>{exercise.words[index]}</span>)}</div><div className={styles.wordBank} aria-label="Available words">{wordOrderIndexes.map((index) => <button key={index} className={styles.wordButton} disabled={selectedWords.includes(index) || practiceFeedback === 'correct'} onClick={() => { setSelectedWords((current) => [...current, index]); setPracticeFeedback(null); }}>{exercise.words[index]}</button>)}</div></>
         : <div className={styles.choiceList}>{exercise.options.map((option, index) => <button key={option} className={styles.choiceButton + (selectedOption === index ? ' ' + styles.choiceSelected : '')} aria-pressed={selectedOption === index} disabled={practiceFeedback === 'correct'} onClick={() => { setSelectedOption(index); setPracticeFeedback(null); }}>{option}</button>)}</div>}
       {practiceFeedback === 'correct' && <div className={styles.feedback + ' ' + styles.feedbackCorrect} role="status"><Check size={18} /><span><strong>Correct!</strong> {exercise.hint}</span></div>}
       {practiceFeedback === 'retry' && <div className={styles.feedback + ' ' + styles.feedbackRetry} role="status"><CircleHelp size={18} /><span>Not quite. Try again. Hint: {exercise.hint}</span></div>}
