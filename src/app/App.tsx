@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { BookOpen, BookOpenText, Check, ChevronRight, CircleHelp, Flame, House, PenLine, RotateCcw, Sparkles, Trophy } from 'lucide-react';
 import { curriculum } from '../data/curriculum';
 import { lessons } from '../data/lessons';
+import { readCompletedDays, saveCompletedDays } from '../storage/progress';
 import styles from './App.module.css';
 
 type Destination = 'Home' | 'Learn' | 'Practice' | 'Write' | 'Progress';
@@ -16,9 +17,19 @@ const destinations: { name: Destination; icon: typeof House }[] = [
 function App() {
   const [screen, setScreen] = useState<Screen>('Home');
   const [selectedDay, setSelectedDay] = useState(1);
+  const [completedDays, setCompletedDays] = useState<number[]>(readCompletedDays);
   const openLesson = (day = 1) => { setSelectedDay(day); setScreen('Lesson'); };
+  const completeLesson = (day: number) => {
+    if (completedDays.includes(day)) return;
+    const updated = [...completedDays, day].sort((first, second) => first - second);
+    saveCompletedDays(updated);
+    setCompletedDays(updated);
+  };
   const navTo = (name: Destination) => setScreen(name);
   const active = screen === 'Lesson' ? 'Learn' : screen;
+  const availableDays = curriculum.filter((day) => day.available);
+  const nextDay = availableDays.find((day) => !completedDays.includes(day.day)) ?? availableDays[0];
+  const totalXp = completedDays.length * 20;
 
   return <div className={styles.appShell}>
     <aside className={styles.sidebar} aria-label="Main navigation">
@@ -34,10 +45,10 @@ function App() {
       <div className={styles.profile}><div className={styles.avatar}>A</div><div><strong>Amrtha</strong><span>English learner</span></div></div>
     </aside>
     <main className={styles.main}>
-      <header className={styles.topbar}><span className={styles.mobileBrand}><BookOpenText size={20} /> English with Amrtha</span><div className={styles.topbarRight}><span className={styles.streak}><Flame size={17} /> 0 day streak</span><span className={styles.xp}><Sparkles size={16} /> 0 XP</span></div></header>
-      {screen === 'Home' && <Dashboard onContinue={openLesson} onLearn={() => navTo('Learn')} />}
-      {screen === 'Learn' && <Curriculum onOpenLesson={openLesson} />}
-      {screen === 'Lesson' && <Lesson key={selectedDay} day={selectedDay} onBack={() => navTo('Learn')} />}
+      <header className={styles.topbar}><span className={styles.mobileBrand}><BookOpenText size={20} /> English with Amrtha</span><div className={styles.topbarRight}><span className={styles.streak}><Flame size={17} /> 0 day streak</span><span className={styles.xp}><Sparkles size={16} /> {totalXp} XP</span></div></header>
+      {screen === 'Home' && <Dashboard nextDay={nextDay} completedCount={completedDays.length} totalXp={totalXp} onContinue={openLesson} onLearn={() => navTo('Learn')} />}
+      {screen === 'Learn' && <Curriculum completedDays={completedDays} onOpenLesson={openLesson} />}
+      {screen === 'Lesson' && <Lesson key={selectedDay} day={selectedDay} onComplete={completeLesson} onBack={() => navTo('Learn')} />}
       {screen !== 'Home' && screen !== 'Learn' && screen !== 'Lesson' && <ComingSoon destination={screen} />}
     </main>
     <nav className={styles.mobileNav} aria-label="Main navigation">{destinations.map(({ name, icon: Icon }) =>
@@ -45,12 +56,12 @@ function App() {
   </div>;
 }
 
-function Dashboard({ onContinue, onLearn }: { onContinue: () => void; onLearn: () => void }) {
+function Dashboard({ nextDay, completedCount, totalXp, onContinue, onLearn }: { nextDay: (typeof curriculum)[number]; completedCount: number; totalXp: number; onContinue: (day: number) => void; onLearn: () => void }) {
   return <div className={styles.content}>
     <div className={styles.greeting}><div><p className={styles.eyebrow}>YOUR WORKPLACE ENGLISH JOURNEY</p><h1>Welcome, Amrtha <span aria-hidden="true">🌼</span></h1><p className={styles.subheading}>Build confidence describing your work in English.</p></div><div className={styles.greetingArt} aria-hidden="true"><span>✦</span><BookOpenText size={48} /></div></div>
-    <section className={styles.heroCard}><div className={styles.heroCopy}><span className={styles.dayPill}><Sparkles size={14} /> YOUR NEXT STEP · DAY 1</span><h2>Every great sentence<br />starts somewhere.</h2><p>Start with a simple pattern for talking about your work.</p><button className={styles.primaryButton} onClick={onContinue}>Start Day 1 <ChevronRight size={18} /></button></div><div className={styles.heroIllustration} aria-hidden="true"><span>☀</span><BookOpenText size={62} /><i>✦</i></div></section>
-    <div className={styles.statsGrid}><StatCard icon={<Flame size={20} />} label="Daily streak" value="0 days" caption="Your first day is waiting" tone="peach" /><StatCard icon={<Sparkles size={19} />} label="Total XP" value="0 XP" caption="Earn XP as you learn" tone="lavender" /><StatCard icon={<BookOpen size={20} />} label="Learning path" value="1 of 30" caption="A lovely start ahead" tone="mint" /></div>
-    <section className={styles.todaySection}><div className={styles.sectionHeader}><div><p className={styles.eyebrow}>YOUR LEARNING PATH</p><h2>Today's little plan</h2></div><button className={styles.textButton} onClick={onLearn}>View all days <ChevronRight size={16} /></button></div><button className={styles.planRow} onClick={onContinue}><span className={styles.planNumber}>01</span><span className={styles.planCopy}><strong>Building Basic Sentences</strong><small>Make clear sentences for work</small></span><span className={styles.planTime}>5 min</span><ChevronRight size={18} /></button></section>
+    <section className={styles.heroCard}><div className={styles.heroCopy}><span className={styles.dayPill}><Sparkles size={14} /> YOUR NEXT STEP · DAY {nextDay.day}</span><h2>{completedCount === 0 ? <>Every great sentence<br />starts somewhere.</> : <>Keep building<br />your confidence.</>}</h2><p>{nextDay.title}: {nextDay.topic}.</p><button className={styles.primaryButton} onClick={() => onContinue(nextDay.day)}>{completedCount === 20 ? 'Review lessons' : `Continue Day ${nextDay.day}`} <ChevronRight size={18} /></button></div><div className={styles.heroIllustration} aria-hidden="true"><span>☀</span><BookOpenText size={62} /><i>✦</i></div></section>
+    <div className={styles.statsGrid}><StatCard icon={<Flame size={20} />} label="Daily streak" value="0 days" caption="Daily streak tracking coming later" tone="peach" /><StatCard icon={<Sparkles size={19} />} label="Total XP" value={`${totalXp} XP`} caption="20 XP for each completed lesson" tone="lavender" /><StatCard icon={<BookOpen size={20} />} label="Lessons complete" value={`${completedCount} of 20`} caption="Your progress is saved on this device" tone="mint" /></div>
+    <section className={styles.todaySection}><div className={styles.sectionHeader}><div><p className={styles.eyebrow}>YOUR LEARNING PATH</p><h2>Today's little plan</h2></div><button className={styles.textButton} onClick={onLearn}>View all days <ChevronRight size={16} /></button></div><button className={styles.planRow} onClick={() => onContinue(nextDay.day)}><span className={styles.planNumber}>{String(nextDay.day).padStart(2, '0')}</span><span className={styles.planCopy}><strong>{nextDay.title}</strong><small>{nextDay.topic}</small></span><span className={styles.planTime}>5 min</span><ChevronRight size={18} /></button></section>
   </div>;
 }
 
@@ -58,19 +69,19 @@ function StatCard({ icon, label, value, caption, tone }: { icon: ReactNode; labe
   return <article className={styles.statCard}><div className={styles.statIcon + ' ' + styles[tone]}>{icon}</div><div><span className={styles.statLabel}>{label}</span><strong className={styles.statValue}>{value}</strong><small className={styles.statCaption}>{caption}</small></div></article>;
 }
 
-function Curriculum({ onOpenLesson }: { onOpenLesson: (day: number) => void }) {
+function Curriculum({ completedDays, onOpenLesson }: { completedDays: number[]; onOpenLesson: (day: number) => void }) {
   return <div className={styles.content}>
     <div className={styles.pageHeading}><p className={styles.eyebrow}>YOUR LEARNING PATH</p><h1>Learn, one day at a time</h1><p className={styles.subheading}>The first twenty lessons are ready, with the rest of your 30-day path to follow.</p></div>
     <section className={styles.curriculumIntro}><div className={styles.curriculumIcon}><BookOpenText size={24} /></div><div><strong>30 days of professional English</strong><p>Start with twenty lessons on workplace grammar, emails, reports and conversations.</p></div><div className={styles.curriculumProgress}><strong>20</strong><span>ready</span></div></section>
     <div className={styles.dayList}>{curriculum.map((day) => <article key={day.day} className={styles.dayCard + (day.available ? ' ' + styles.dayAvailable : ' ' + styles.dayLocked)}>
       <div className={styles.dayNumber + (day.available ? ' ' + styles.dayNumberAvailable : '')}>{day.available ? <BookOpen size={19} /> : String(day.day).padStart(2, '0')}</div>
       <div className={styles.dayInfo}><span>DAY {String(day.day).padStart(2, '0')}</span><h2>{day.title}</h2><p>{day.topic}</p></div>
-      {day.available ? <button className={styles.dayAction} onClick={() => onOpenLesson(day.day)}>Start <ChevronRight size={16} /></button> : <span className={styles.comingLabel}>Coming soon</span>}
+      {day.available ? <button className={styles.dayAction + (completedDays.includes(day.day) ? ' ' + styles.dayActionCompleted : '')} onClick={() => onOpenLesson(day.day)}>{completedDays.includes(day.day) ? <>Completed <Check size={15} /></> : <>Start <ChevronRight size={16} /></>}</button> : <span className={styles.comingLabel}>Coming soon</span>}
     </article>)}</div>
   </div>;
 }
 
-function Lesson({ day, onBack }: { day: number; onBack: () => void }) {
+function Lesson({ day, onComplete, onBack }: { day: number; onComplete: (day: number) => void; onBack: () => void }) {
   const lesson = lessons.find((item) => item.day === day);
   const [phase, setPhase] = useState<'practice' | 'writing' | 'assessment' | 'complete'>('practice');
   const [exerciseIndex, setExerciseIndex] = useState(0);
@@ -135,9 +146,9 @@ function Lesson({ day, onBack }: { day: number; onBack: () => void }) {
 
     {phase === 'writing' && <section className={styles.exerciseCard}><div className={styles.exerciseHeader}><span className={styles.exerciseIcon}><PenLine size={19} /></span><div><p className={styles.eyebrow}>WRITING CHALLENGE</p><h2>Put it into your own words</h2></div></div><p className={styles.exercisePrompt}>{lesson.writingPrompt}</p><textarea className={styles.writingInput} value={writing} onChange={(event) => { setWriting(event.target.value); setWritingFeedback(null); }} rows={4} placeholder="Write your answer here…" aria-label="Your writing challenge response" /><p className={styles.writingHint}>Quick check: write at least five words and finish with a full stop, question mark or exclamation mark.</p>{writingFeedback === 'accepted' && <div className={styles.feedback + ' ' + styles.feedbackCorrect} role="status"><Check size={18} /><span>Your response meets the basic length and punctuation check. Read it once to check that it says what you mean.</span></div>}{writingFeedback === 'retry' && <div className={styles.feedback + ' ' + styles.feedbackRetry} role="status"><CircleHelp size={18} /><span>Add a little more and finish with punctuation. You can try again.</span></div>}<div className={styles.exerciseActions}>{writingFeedback === 'accepted' ? <button className={styles.primaryButton} onClick={() => setPhase('assessment')}>Continue to assessment <ChevronRight size={18} /></button> : <button className={styles.primaryButton} disabled={!writing.trim()} onClick={checkWriting}>Check my writing <ChevronRight size={18} /></button>}</div></section>}
 
-    {phase === 'assessment' && <section className={styles.exerciseCard}><div className={styles.exerciseHeader}><span className={styles.exerciseIcon}><Trophy size={19} /></span><div><p className={styles.eyebrow}>DAY {day} ASSESSMENT</p><h2>One final question</h2></div></div><p className={styles.exercisePrompt}>{lesson.assessment.prompt}</p><div className={styles.choiceList}>{lesson.assessment.options.map((option, index) => <button key={option} className={styles.choiceButton + (assessmentOption === index ? ' ' + styles.choiceSelected : '')} aria-pressed={assessmentOption === index} disabled={assessmentFeedback === 'correct'} onClick={() => { setAssessmentOption(index); setAssessmentFeedback(null); }}>{option}</button>)}</div>{assessmentFeedback === 'correct' && <div className={styles.feedback + ' ' + styles.feedbackCorrect} role="status"><Check size={18} /><span><strong>Well done!</strong> {lesson.assessment.hint}</span></div>}{assessmentFeedback === 'retry' && <div className={styles.feedback + ' ' + styles.feedbackRetry} role="status"><CircleHelp size={18} /><span>Try once more. Hint: {lesson.assessment.hint}</span></div>}<div className={styles.exerciseActions}>{assessmentFeedback === 'correct' ? <button className={styles.primaryButton} onClick={() => setPhase('complete')}>Finish lesson <Check size={18} /></button> : <button className={styles.primaryButton} disabled={assessmentOption === null} onClick={checkAssessment}>Check assessment <ChevronRight size={18} /></button>}</div></section>}
+    {phase === 'assessment' && <section className={styles.exerciseCard}><div className={styles.exerciseHeader}><span className={styles.exerciseIcon}><Trophy size={19} /></span><div><p className={styles.eyebrow}>DAY {day} ASSESSMENT</p><h2>One final question</h2></div></div><p className={styles.exercisePrompt}>{lesson.assessment.prompt}</p><div className={styles.choiceList}>{lesson.assessment.options.map((option, index) => <button key={option} className={styles.choiceButton + (assessmentOption === index ? ' ' + styles.choiceSelected : '')} aria-pressed={assessmentOption === index} disabled={assessmentFeedback === 'correct'} onClick={() => { setAssessmentOption(index); setAssessmentFeedback(null); }}>{option}</button>)}</div>{assessmentFeedback === 'correct' && <div className={styles.feedback + ' ' + styles.feedbackCorrect} role="status"><Check size={18} /><span><strong>Well done!</strong> {lesson.assessment.hint}</span></div>}{assessmentFeedback === 'retry' && <div className={styles.feedback + ' ' + styles.feedbackRetry} role="status"><CircleHelp size={18} /><span>Try once more. Hint: {lesson.assessment.hint}</span></div>}<div className={styles.exerciseActions}>{assessmentFeedback === 'correct' ? <button className={styles.primaryButton} onClick={() => { onComplete(day); setPhase('complete'); }}>Finish lesson <Check size={18} /></button> : <button className={styles.primaryButton} disabled={assessmentOption === null} onClick={checkAssessment}>Check assessment <ChevronRight size={18} /></button>}</div></section>}
 
-    {phase === 'complete' && <section className={styles.exerciseCard}><div className={styles.completionMark}><Trophy size={28} /></div><p className={styles.eyebrow}>DAY {day} COMPLETE</p><h2>Good work, Amrtha!</h2><p className={styles.subheading}>You practised {lesson.concept.toLowerCase()} in workplace English. Your writing stays on this screen only and is not saved yet.</p><div className={styles.exerciseActions}><button className={styles.primaryButton} onClick={onBack}>Back to learning path <ChevronRight size={18} /></button></div></section>}
+    {phase === 'complete' && <section className={styles.exerciseCard}><div className={styles.completionMark}><Trophy size={28} /></div><p className={styles.eyebrow}>DAY {day} COMPLETE</p><h2>Good work, Amrtha!</h2><p className={styles.subheading}>You practised {lesson.concept.toLowerCase()} in workplace English. Lesson completion is saved on this device; your writing response is not saved.</p><div className={styles.exerciseActions}><button className={styles.primaryButton} onClick={onBack}>Back to learning path <ChevronRight size={18} /></button></div></section>}
   </div>;
 }
 

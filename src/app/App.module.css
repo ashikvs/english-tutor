@@ -53,6 +53,7 @@ h1{font-size:clamp(26px,3vw,34px);letter-spacing:-.7px;margin:0}
 .dayAvailable{border-color:#d8d5fc}.dayNumber{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:#f4f5fa;color:#969bb0;font-size:12px;font-weight:800;flex:none}.dayNumberAvailable{background:#f0efff;color:var(--color-primary)}
 .dayInfo{flex:1;min-width:0}.dayInfo>span{font-size:9px;letter-spacing:1px;color:#999db0;font-weight:800}.dayInfo h2{font-size:14px;margin:3px 0}.dayInfo p{font-size:11px;color:#8b90a4;margin:0}
 .dayAction{border:0;background:#f0efff;color:var(--color-primary);font-size:12px;font-weight:800;border-radius:10px;padding:9px 11px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.dayActionCompleted{background:#e8f7ef;color:#39835e}
 .comingLabel{font-size:10px;color:#a0a4b3;background:#f7f8fb;padding:7px 9px;border-radius:12px}
 .backButton{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;padding:0;color:#737a92;font-size:13px;cursor:pointer;margin:4px 0 19px}
 .lessonHeading{margin-bottom:22px}.lessonHeading h1{font-size:29px;margin-top:12px}
