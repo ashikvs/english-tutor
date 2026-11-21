@@ -1,0 +1,47 @@
+:root {
+  font-family: 'Aptos', 'Segoe UI', sans-serif;
+  color: #252b45;
+  background: #f6f8ff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --color-primary: #5a55d6;
+  --color-primary-soft: #eeedff;
+  --color-surface: #fff;
+  --color-border: #e8eaf4;
+  --color-text: #252b45;
+  --color-text-muted: #727891;
+  --radius-xl: 1.75rem;
+  --shadow-card: 0 1rem 3rem rgb(49 58 102 / 8%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Trebuchet MS', sans-serif;
+  color: var(--color-text);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 1.12;
+}

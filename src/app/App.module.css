@@ -1,0 +1,82 @@
+.appShell{min-height:100vh;display:flex;color:var(--color-text)}
+.sidebar{width:246px;position:fixed;inset:0 auto 0 0;background:#fff;border-right:1px solid var(--color-border);padding:27px 18px 20px;display:flex;flex-direction:column;z-index:3}
+.brand{display:flex;align-items:center;gap:10px;color:var(--color-text);font-weight:800;font-size:15px;text-decoration:none;padding:0 8px}
+.brand b{display:block;color:var(--color-primary);font-size:13px;margin-top:1px}
+.brandIcon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:var(--color-primary-soft);color:var(--color-primary)}
+.navLabel,.eyebrow{font-size:10px;letter-spacing:1.35px;font-weight:800;color:#9298ae}
+.navLabel{margin:42px 10px 12px}
+.navList{display:grid;gap:5px}
+.navItem{width:100%;height:44px;border:0;background:transparent;color:#737a92;border-radius:12px;display:flex;align-items:center;gap:12px;padding:0 12px;text-align:left;font-weight:650;cursor:pointer}
+.navItem:hover,.navItemActive{background:#f0efff;color:var(--color-primary)}
+.navDot{width:7px;height:7px;border-radius:50%;background:#ff9674;margin-left:auto}
+.sidebarCard{margin-top:auto;border-radius:16px;padding:16px;background:#f4f3ff;color:var(--color-primary)}
+.sidebarCard strong{display:block;font-size:13px;margin:9px 0 4px;color:#34305f}
+.sidebarCard p{margin:0;color:#777795;font-size:12px;line-height:1.55}
+.profile{display:flex;align-items:center;gap:10px;margin-top:18px;padding:14px 7px 0;border-top:1px solid var(--color-border)}
+.avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#ffe4d8;color:#a65432;font-weight:800}
+.profile strong,.profile span{display:block;font-size:12px}.profile span{font-size:11px;color:#8e93a8;margin-top:2px}
+.main{margin-left:246px;width:calc(100% - 246px);min-height:100vh}
+.topbar{height:68px;border-bottom:1px solid var(--color-border);background:rgb(255 255 255 / 83%);display:flex;align-items:center;justify-content:flex-end;padding:0 5.2%;gap:16px}
+.topbarRight{display:flex;gap:9px}.streak,.xp{font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;padding:8px 11px;border-radius:20px}.streak{color:#c76839;background:#fff2e9}.xp{color:#6b58bd;background:#f0edff}
+.mobileBrand{display:none}
+.content{max-width:1060px;padding:37px 5.2% 70px;margin:0 auto}
+.greeting{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}
+.eyebrow{margin:0 0 8px}
+h1{font-size:clamp(26px,3vw,34px);letter-spacing:-.7px;margin:0}
+.subheading{margin:9px 0 0;color:var(--color-text-muted);font-size:14px;line-height:1.6}
+.greetingArt{width:94px;height:82px;border-radius:25px;background:#fff1df;color:#ec9b4d;display:grid;place-items:center;position:relative;transform:rotate(3deg)}
+.greetingArt span{position:absolute;top:9px;right:13px;font-size:20px;color:#e9b649}
+.heroCard{background:linear-gradient(110deg,#5c53d3,#7970e6);color:white;border-radius:22px;display:flex;justify-content:space-between;overflow:hidden;min-height:235px;padding:28px 34px;position:relative;box-shadow:0 14px 30px #645bd52b}
+.heroCopy{max-width:430px;position:relative;z-index:1}.dayPill{display:inline-flex;align-items:center;gap:6px;border-radius:20px;background:#ffffff25;padding:7px 10px;font-size:10px;font-weight:800;letter-spacing:.55px}
+.heroCard h2{font-size:29px;line-height:1.12;letter-spacing:-.4px;color:#fff;margin:15px 0 8px}
+.heroCard p{font-size:13px;color:#e5e2ff;line-height:1.55;max-width:340px;margin:0 0 17px}
+.primaryButton{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:11px;background:#fff;color:#554bcc;font-weight:800;padding:11px 15px;min-height:42px;cursor:pointer}
+.primaryButton:hover{filter:brightness(.97);transform:translateY(-1px)}.primaryButton:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.heroIllustration{position:absolute;width:260px;height:220px;right:26px;top:9px;display:grid;place-items:center;color:#fff9}
+.heroIllustration>span{position:absolute;right:31px;top:8px;font-size:35px;color:#ffdc8a}.heroIllustration>svg{padding:20px;width:116px;height:100px;background:#ffffff20;border-radius:22px;transform:rotate(-8deg)}.heroIllustration i{position:absolute;bottom:28px;left:38px;font-style:normal;color:#ffd785;font-size:26px}
+.statsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.statCard{border:1px solid var(--color-border);background:#fff;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;min-width:0}
+.statIcon{width:39px;height:39px;flex:none;border-radius:13px;display:grid;place-items:center}.peach{background:#fff0e7;color:#e58954}.lavender{background:#f0edff;color:#7664d0}.mint{background:#e8f7ef;color:#4d9c76}
+.statLabel,.statValue,.statCaption{display:block}.statLabel{font-size:11px;color:#858aa0}.statValue{font-size:19px;margin:3px 0;color:#30364d}.statCaption{font-size:10px;color:#9a9fb0}
+.todaySection{margin-top:31px}.sectionHeader{display:flex;justify-content:space-between;align-items:end;margin-bottom:13px}
+.sectionHeader h2{font-size:19px;margin:0}.textButton{border:0;background:transparent;color:var(--color-primary);font-weight:750;font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.planRow{width:100%;display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--color-border);border-radius:15px;background:#fff;text-align:left;color:inherit;cursor:pointer}
+.planRow:hover,.dayAvailable:hover{border-color:#cac7fc;box-shadow:0 5px 16px #514bd20c}
+.planNumber{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:#f0efff;color:var(--color-primary);font-weight:800}
+.planCopy{flex:1}.planCopy strong,.planCopy small{display:block}.planCopy strong{font-size:13px}.planCopy small{font-size:11px;color:#8b90a4;margin-top:4px}.planTime{font-size:11px;color:#8b90a4}
+.pageHeading{margin:10px 0 24px}.pageHeading h1{font-size:31px}
+.curriculumIntro{display:flex;align-items:center;gap:13px;padding:17px;background:#f0efff;border-radius:17px;margin-bottom:20px}
+.curriculumIcon,.conceptIcon{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:14px;background:#fff;color:var(--color-primary)}
+.curriculumIntro>div:nth-child(2){flex:1}.curriculumIntro strong{font-size:14px}.curriculumIntro p{font-size:12px;color:#777891;margin:4px 0 0}
+.curriculumProgress{text-align:center}.curriculumProgress strong,.curriculumProgress span{display:block}.curriculumProgress strong{font-size:18px;color:var(--color-primary)}.curriculumProgress span{font-size:10px;color:#858aa0}
+.dayList{display:grid;gap:9px}.dayCard{display:flex;align-items:center;gap:13px;padding:13px 15px;background:#fff;border:1px solid var(--color-border);border-radius:15px}
+.dayAvailable{border-color:#d8d5fc}.dayNumber{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:#f4f5fa;color:#969bb0;font-size:12px;font-weight:800;flex:none}.dayNumberAvailable{background:#f0efff;color:var(--color-primary)}
+.dayInfo{flex:1;min-width:0}.dayInfo>span{font-size:9px;letter-spacing:1px;color:#999db0;font-weight:800}.dayInfo h2{font-size:14px;margin:3px 0}.dayInfo p{font-size:11px;color:#8b90a4;margin:0}
+.dayAction{border:0;background:#f0efff;color:var(--color-primary);font-size:12px;font-weight:800;border-radius:10px;padding:9px 11px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.comingLabel{font-size:10px;color:#a0a4b3;background:#f7f8fb;padding:7px 9px;border-radius:12px}
+.backButton{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;padding:0;color:#737a92;font-size:13px;cursor:pointer;margin:4px 0 19px}
+.lessonHeading{margin-bottom:22px}.lessonHeading h1{font-size:29px;margin-top:12px}
+.conceptCard,.exerciseCard{background:#fff;border:1px solid var(--color-border);border-radius:18px;padding:21px;margin-bottom:20px}
+.conceptTop{display:flex;align-items:center;justify-content:space-between}.conceptTop h2{font-size:20px;margin:0}.conceptCard>p{font-size:13px;line-height:1.65;color:#6f758d;margin:14px 0}
+.conceptIcon{background:#f1efff}.malayalam{padding:13px 15px;background:#fff7e9;border-radius:12px}.malayalam strong{font-size:11px;color:#b47532}.malayalam p{font-size:13px;line-height:1.7;margin:5px 0 0;color:#65594c}
+.examplesSection{margin-bottom:21px}.examplesSection .sectionHeader{margin-bottom:11px}.examplesSection h2{font-size:18px;margin:0}
+.examplesGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.example{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--color-border);padding:12px;border-radius:13px}.example>span{font-size:10px;color:#969bb0;font-weight:800}.example strong{font-size:12px;flex:1}.example svg{color:#5da783}
+.exerciseCard{background:#fcfbff;border-color:#e7e3ff}.exerciseHeader{display:flex;align-items:center;gap:11px}.exerciseIcon{width:38px;height:38px;border-radius:12px;background:#efedff;color:var(--color-primary);display:grid;place-items:center}.exerciseHeader .eyebrow{margin-bottom:3px}.exerciseHeader h2{font-size:17px;margin:0}.exerciseCount{margin-left:auto;color:#8c91a4;font-size:11px}
+.exercisePrompt{font-size:12px;color:#777d92;margin:17px 0 10px}.answerArea{min-height:56px;border:1px dashed #c9c6e9;background:#fff;border-radius:12px;padding:10px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}.answerHint{font-size:12px;color:#a1a5b6}.answerWord,.wordButton{border-radius:9px;padding:8px 11px;font-size:12px;font-weight:700}.answerWord{background:#eeedff;color:#5149b5}
+.wordBank{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.wordButton{border:1px solid #e0def0;background:#fff;color:#343950;cursor:pointer}.wordButton:hover:not(:disabled){border-color:#aaa5e9;color:#534cc2}.wordButton:disabled{opacity:.35;cursor:default}
+.feedback{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;border-radius:11px;margin-top:14px;font-size:12px;line-height:1.55}.feedback strong{display:block}.feedbackCorrect{background:#eaf7ef;color:#377b55}.feedbackRetry{background:#fff4e7;color:#946127}
+.exerciseActions{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:16px}.exerciseActions .primaryButton{background:var(--color-primary);color:#fff}.resetButton{border:0;background:transparent;color:#7d8296;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px}
+.comingPage{min-height:calc(100vh - 68px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;max-width:520px;margin:auto}.comingIcon{width:65px;height:65px;border-radius:21px;background:#f0efff;color:var(--color-primary);display:grid;place-items:center;margin-bottom:20px}.comingPage h1{font-size:28px}.comingPage .subheading{max-width:410px}.comingPill{font-size:11px;color:#777891;background:#f0f1f6;padding:8px 12px;border-radius:18px;margin-top:18px}
+.mobileNav{display:none}
+.choiceList{display:grid;gap:8px;margin-top:14px}
+.choiceButton{width:100%;min-height:43px;padding:10px 12px;border:1px solid #e0def0;border-radius:11px;background:#fff;color:#343950;text-align:left;font:inherit;font-size:12px;line-height:1.45;cursor:pointer}
+.choiceButton:hover:not(:disabled){border-color:#aaa5e9;background:#faf9ff}
+.choiceButton:disabled{cursor:default}
+.choiceSelected{border-color:#8179df;background:#f0efff;color:#5149b5;font-weight:700}
+.writingInput{display:block;width:100%;min-height:110px;padding:12px;border:1px solid #dcd9ed;border-radius:12px;resize:vertical;background:#fff;color:var(--color-text);font:inherit;font-size:13px;line-height:1.55}
+.writingInput:focus{outline:3px solid #eeedff;border-color:#8d86df}
+.writingHint{font-size:11px;color:#8b90a4;line-height:1.5;margin:8px 0 0}
+.completionMark{width:54px;height:54px;margin-bottom:14px;border-radius:17px;background:#e8f7ef;color:#4d9c76;display:grid;place-items:center}
+@media(max-width:900px){.sidebar{width:215px}.main{margin-left:215px;width:calc(100% - 215px)}.content{padding-left:4%;padding-right:4%}.heroIllustration{right:-25px;opacity:.75}.heroCopy{max-width:370px}.statsGrid{gap:9px}.statCard{padding:12px;gap:9px}.statCaption{display:none}}
+@media(max-width:680px){.sidebar{display:none}.main{margin-left:0;width:100%;padding-bottom:72px}.topbar{height:58px;padding:0 18px;justify-content:space-between}.mobileBrand{display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:800;font-size:13px}.streak,.xp{padding:7px 8px;font-size:10px}.topbarRight{gap:5px}.content{padding:25px 17px 35px}.greeting{margin-bottom:18px}.greetingArt{width:59px;height:56px;border-radius:18px}.greetingArt svg{width:31px}.greetingArt span{font-size:14px;right:8px;top:3px}.greeting h1{font-size:25px}.subheading{font-size:12px}.heroCard{padding:20px;border-radius:18px;min-height:228px}.heroCopy{max-width:100%}.heroCard h2{font-size:25px}.heroCard p{max-width:245px;font-size:12px}.heroIllustration{right:-87px;opacity:.28}.statsGrid{grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.statCard{padding:11px}.statCard:last-child{grid-column:span 2}.statIcon{width:34px;height:34px}.statValue{font-size:16px}.todaySection{margin-top:25px}.sectionHeader h2{font-size:17px}.planRow{gap:9px;padding:11px}.planNumber{width:34px;height:34px}.planCopy strong{font-size:11px}.planCopy small{font-size:10px}.planTime{font-size:10px}.mobileNav{position:fixed;inset:auto 0 0;display:flex;justify-content:space-around;padding:7px 5px calc(7px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--color-border);z-index:4}.mobileNavItem{flex:1;border:0;background:transparent;color:#969bad;display:grid;justify-items:center;gap:3px;padding:3px 0;font-size:9px;font-weight:700}.mobileNavActive{color:var(--color-primary)}.pageHeading h1{font-size:26px}.curriculumIntro{padding:13px;gap:9px}.curriculumIntro p{font-size:10px;line-height:1.4}.curriculumProgress strong{font-size:15px}.dayCard{gap:9px;padding:10px}.dayNumber{width:34px;height:34px}.dayInfo h2{font-size:12px}.dayInfo p{font-size:10px}.dayAction{padding:8px;font-size:10px}.comingLabel{font-size:9px;padding:6px}.lessonHeading h1{font-size:25px}.conceptCard,.exerciseCard{padding:16px}.conceptTop h2{font-size:17px}.conceptCard>p{font-size:12px}.malayalam p{font-size:12px}.examplesGrid{grid-template-columns:1fr}.example{padding:10px}.example strong{font-size:12px}.exerciseActions .primaryButton{font-size:11px;padding:9px 11px;min-height:38px}}
+@media(max-width:370px){.topbar{padding:0 10px}.mobileBrand{font-size:11px}.streak,.xp{font-size:9px}.content{padding-left:12px;padding-right:12px}.heroCard{padding:17px}.dayAction{gap:1px}.dayInfo h2{font-size:11px}}
